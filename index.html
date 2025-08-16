@@ -45,7 +45,7 @@
         border-radius: 50%;
         border: 8px solid;
         border-color: #0aff16 #0000;
-        animation: s1 1s linear infinite;
+        animation: s1 2s linear infinite;
         overflow: hidden;
     }
     .custom-loader::before {
@@ -116,7 +116,7 @@
         <div class="lh"><b>LET'S HACK</b></div>
         <div class="custom-loader" id="loader"></div>
         <div class="loader-content">Подключение</div>
-        <div class="text" id="replacementText"><b>x4.14</b></div>
+        <div class="text" id="replacementText"><b>x3.81</b></div>
         <div class="tg"><b>LUCKY JET HACK</b></div>
     </div>
 
@@ -125,19 +125,49 @@
     var replacementText = document.getElementById('replacementText');
     var loaderContent = document.querySelector('.loader-content');
     var rotationCount = 0;
+    var stage = 1; // 1 - первая цифра, 2 - вторая
+
+    function stopAnimation(value) {
+        loader.style.borderColor = '#0aff16';
+        replacementText.style.display = 'block';
+        loader.style.animation = 'none';
+        replacementText.innerHTML = '<b>x' + value + '</b>';
+        loaderContent.innerHTML = 'Подключение';
+        loader.classList.add('shadow');
+        setTimeout(function () {
+            loaderContent.classList.add('hidden');
+        }, 10);
+    }
+
+    function restartAnimation() {
+        loader.style.animation = 'none';
+        loader.offsetHeight; // триггер перерисовки
+        loader.style.borderColor = '#0aff16 #0000';
+        loader.classList.remove('shadow');
+        loader.style.animation = 's1 2s linear infinite';
+    }
 
     loader.addEventListener('animationiteration', function () {
         rotationCount++;
-        if (rotationCount === 6) {
-            loader.style.borderColor = '#0aff16';
-            replacementText.style.display = 'block';
-            loader.style.animation = 'none';
-            replacementText.innerHTML = '<b>x4.14</b>';
-            loaderContent.innerHTML = 'Подключение';
-            loader.classList.add('shadow');
-            setTimeout(function () {
-                loaderContent.classList.add('hidden');
-            }, 10);
+        if (rotationCount === 1 && stage === 1) {
+            stopAnimation("3.81");
+
+            setTimeout(function(){
+                // сброс и новая анимация через 17 секунд
+                stage = 2;
+                rotationCount = 0;
+                replacementText.style.display = 'none';
+                loaderContent.classList.remove('hidden');
+                loaderContent.innerHTML = 'Подключение';
+
+                restartAnimation();
+            }, 19000);
+        } else if (rotationCount === 1 && stage === 2) {
+            stopAnimation("3.13");
+            setTimeout(function(){
+                // держим 14 секунд на второй цифре
+                console.log("x3.13 держится 14 секунд");
+            }, 14000);
         }
     });
 
